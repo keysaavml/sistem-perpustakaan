@@ -1,5 +1,6 @@
-<?php
+use App\Http\Controllers\MemberController;
 
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
@@ -19,3 +20,6 @@ Route::resource('books', BookController::class);
 
 Route::resource('users', UserController::class)->except('show');
 >>>>>>> d33e83ff8122cb6028f6351f27f2e6814afc54c0
+=======
+Route::resource('members', MemberController::class);
+>>>>>>> Stashed changes
