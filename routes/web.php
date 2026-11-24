@@ -12,3 +12,4 @@ Route::get('/buku', [BookController::class, 'index'])
     ->name('books.index');
 
 Route::resource('categories', CategoryController::class)->except('show');
+Route::resource('books', BookController::class);
