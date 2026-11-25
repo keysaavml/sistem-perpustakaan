@@ -119,7 +119,7 @@ Setiap tabel memiliki relasi sesuai dengan kebutuhan pengelolaan data perpustaka
 
 ## Identitas Kelompok
 
-Nama Kelompok: [Nama Kelompok]
+Nama Kelompok: Kelompok 4
 
 Mata Kuliah: Pemrograman Web Framework
 
@@ -129,9 +129,9 @@ Universitas: Universitas Singaperbangsa Karawang
 
 ### Anggota Kelompok
 
-1. [Hanny Fadillah Septiani] - [2410631250051]
-2. [Keysa Avmalia] - [2410631250013]
-3. [Zahwa Lamini Arsyi Anjuni] - [2410631250114]
+1. Hanny Fadillah Septiani - 2410631250051
+2. Keysa Avmalia - 2410631250013
+3. Zahwa Lamini Arsyi Anjuni - 2410631250114
 
 ## Repository
 
