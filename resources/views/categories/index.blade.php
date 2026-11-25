@@ -1,3 +1,4 @@
+
 <h1>Daftar Kategori</h1>
 
 @if (session('success')) <div style="color:green">{{ session('success') }}</div> @endif

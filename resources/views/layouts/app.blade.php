@@ -16,13 +16,25 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar p-3">
+        <nav class="col-md-2 d-none d-md-flex flex-column sidebar p-3">
             <h5 class="text-white fw-bold mb-4 px-2">📚 Perpustakaan</h5>
             <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('categories.index') }}" class="{{ request()->is('categories*') ? 'active' : '' }}">Kategori Buku</a>
             <a href="{{ route('books.index') }}" class="{{ request()->is('books*') ? 'active' : '' }}">Manajemen Buku</a>
             <a href="#">Data Anggota</a>
             <a href="#">Peminjaman</a>
+
+            <!-- Tombol Logout di bagian bawah sidebar -->
+            <div class="mt-auto pt-3 border-top border-secondary">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" 
+                            onclick="return confirm('Yakin ingin keluar dari sistem?')"
+                            class="btn btn-outline-danger w-100 text-start px-3 py-2">
+                        🚪 Logout
+                    </button>
+                </form>
+            </div>
         </nav>
 
         <main class="col-md-10 ms-sm-auto px-md-4 py-4">

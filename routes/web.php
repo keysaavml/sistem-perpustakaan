@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
@@ -9,13 +11,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/buku', [BookController::class, 'index'])
-    ->name('books.index');
-
 Route::resource('categories', CategoryController::class)->except('show');
-<<<<<<< HEAD
 Route::resource('books', BookController::class);
-=======
-
 Route::resource('users', UserController::class)->except('show');
->>>>>>> d33e83ff8122cb6028f6351f27f2e6814afc54c0
+
+// Route Logout (bisa dihapus nanti kalo si key udah menggabungkan kode auth miliknya)
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/login');
+})->name('logout');
