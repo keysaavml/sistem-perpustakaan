@@ -21,8 +21,8 @@
             <a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}">Dashboard</a>
             <a href="{{ route('categories.index') }}" class="{{ request()->is('categories*') ? 'active' : '' }}">Kategori Buku</a>
             <a href="{{ route('books.index') }}" class="{{ request()->is('books*') ? 'active' : '' }}">Manajemen Buku</a>
-            <a href="#">Data Anggota</a>
-            <a href="#">Peminjaman</a>
+            <a href="{{ route('members.index') }}" class="{{ request()->is('members*') ? 'active' : '' }}">Data Anggota</a>
+            <a href="{{ route('borrowings.index') }}" class="{{ request()->is('borrowings*') ? 'active' : '' }}">Peminjaman</a>
         </nav>
 
         <main class="col-md-10 ms-sm-auto px-md-4 py-4">

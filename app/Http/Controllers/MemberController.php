@@ -17,8 +17,8 @@ class MemberController extends Controller
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('member_code', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('phone', 'like', "%{$search}%");
                 });
             })
             ->orderBy('name')
@@ -43,9 +43,11 @@ class MemberController extends Controller
             ->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-    // DETAIL anggota
+    // DETAIL anggota + riwayat peminjaman
     public function show(Member $member): View
     {
+        $member->load(['borrowings' => fn ($q) => $q->latest('borrow_date')]);
+
         return view('members.show', compact('member'));
     }
 
@@ -64,13 +66,12 @@ class MemberController extends Controller
             ->with('success', 'Anggota berhasil diperbarui.');
     }
 
-    // HAPUS anggota
+    // HAPUS anggota (ditolak jika punya riwayat peminjaman)
     public function destroy(Member $member): RedirectResponse
     {
-        // Aktifkan jika sudah ada relasi loans:
-        // if ($member->loans()->exists()) {
-        //     return back()->with('error', 'Anggota masih punya riwayat peminjaman, tidak bisa dihapus.');
-        // }
+        if ($member->borrowings()->exists()) {
+            return back()->with('error', 'Anggota masih punya riwayat peminjaman, tidak bisa dihapus.');
+        }
 
         $member->delete();
 
@@ -82,13 +83,11 @@ class MemberController extends Controller
     private function rules(?Member $member = null): array
     {
         return [
-            'name'      => ['required', 'string', 'max:255'],
-            'email'     => ['required', 'email', 'max:255',
-                            Rule::unique('members', 'email')->ignore($member?->id)],
-            'phone'     => ['nullable', 'string', 'max:20'],
-            'address'   => ['nullable', 'string'],
-            'joined_at' => ['required', 'date'],
-            'status'    => ['required', Rule::in(['active', 'inactive'])],
+            'name'    => ['required', 'string', 'max:255'],
+            'email'   => ['nullable', 'email', 'max:255',
+                         Rule::unique('members', 'email')->ignore($member?->id)],
+            'phone'   => ['nullable', 'string', 'max:20'],
+            'address' => ['nullable', 'string'],
         ];
     }
 }
