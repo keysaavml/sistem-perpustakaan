@@ -7,6 +7,7 @@ use App\Models\Borrowing;
 use App\Models\Member;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -43,7 +44,6 @@ class BorrowingController extends Controller
         $validated = $request->validate([
             'member_id'         => ['required', 'exists:members,id'],
             'borrow_date'       => ['required', 'date'],
-            'due_date'          => ['required', 'date', 'after_or_equal:borrow_date'],
             'books'             => ['required', 'array', 'min:1'],
             'books.*.book_id'   => ['required', 'distinct', 'exists:books,id'],
             'books.*.quantity'  => ['required', 'integer', 'min:1'],
@@ -59,7 +59,8 @@ class BorrowingController extends Controller
                     'user_id'     => Auth::id(),   // petugas yang sedang login
                     'member_id'   => $validated['member_id'],
                     'borrow_date' => $validated['borrow_date'],
-                    'due_date'    => $validated['due_date'],
+                    // due date otomatis 1 minggu setelah tanggal pinjam
+                    'due_date'    => Carbon::parse($validated['borrow_date'])->addWeek()->toDateString(),
                     'status'      => 'borrowed',
                 ]);
 

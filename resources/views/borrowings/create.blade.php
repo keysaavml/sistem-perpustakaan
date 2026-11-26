@@ -33,15 +33,15 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Tanggal Pinjam</label>
-                <input type="date" name="borrow_date" class="form-control @error('borrow_date') is-invalid @enderror"
+                <input type="date" id="borrow_date" name="borrow_date"
+                       class="form-control @error('borrow_date') is-invalid @enderror"
                        value="{{ old('borrow_date', date('Y-m-d')) }}">
                 @error('borrow_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label">Jatuh Tempo</label>
-                <input type="date" name="due_date" class="form-control @error('due_date') is-invalid @enderror"
-                       value="{{ old('due_date', date('Y-m-d', strtotime('+7 days'))) }}">
-                @error('due_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <label class="form-label">Jatuh Tempo (otomatis 1 minggu)</label>
+                <input type="date" id="due_date" class="form-control" readonly
+                       value="{{ \Illuminate\Support\Carbon::parse(old('borrow_date', date('Y-m-d')))->addWeek()->toDateString() }}">
             </div>
         </div>
 
@@ -85,6 +85,17 @@
         if (rowsBox.querySelectorAll('.book-row').length > 1) {
             e.target.closest('.book-row').remove();
         }
+    });
+
+    // Jatuh tempo otomatis = tanggal pinjam + 7 hari
+    const borrowDate = document.getElementById('borrow_date');
+    const dueDate    = document.getElementById('due_date');
+
+    borrowDate.addEventListener('change', () => {
+        if (!borrowDate.value) return;
+        const d = new Date(borrowDate.value);
+        d.setUTCDate(d.getUTCDate() + 7);
+        dueDate.value = d.toISOString().slice(0, 10);
     });
 </script>
 @endsection
