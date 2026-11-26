@@ -20,6 +20,51 @@
         </div>
     @endif
 
+    {{-- Form pencarian & filter --}}
+    <form method="GET" action="{{ route('books.index') }}" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Cari judul, penulis, tahun, atau kategori..."
+                   value="{{ $search }}">
+        </div>
+
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}"
+                        {{ (int) $categoryId === $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="stock" class="form-select">
+                <option value="">Semua Stok</option>
+                <option value="available" {{ $stock === 'available' ? 'selected' : '' }}>Tersedia</option>
+                <option value="empty" {{ $stock === 'empty' ? 'selected' : '' }}>Habis</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 d-flex gap-1">
+            <button type="submit" class="btn btn-primary flex-fill">Cari</button>
+            <a href="{{ route('books.index') }}" class="btn btn-outline-secondary flex-fill">Reset</a>
+        </div>
+    </form>
+
+    @if($search !== '' || $categoryId || $stock !== '')
+        <p class="text-muted small mb-3">
+            Ditemukan <strong>{{ $books->total() }}</strong> buku
+            @if($search !== '')
+                untuk kata kunci "<strong>{{ $search }}</strong>"
+            @endif
+        </p>
+    @endif
+
     <div class="table-responsive">
         <table class="table table-bordered table-hover align-middle text-center">
 
@@ -84,13 +129,27 @@
                 @empty
                     <tr>
                         <td colspan="7" class="text-muted py-4">
-                            Belum ada data buku.
+                            @if($search !== '' || $categoryId || $stock !== '')
+                                Tidak ada buku yang cocok dengan pencarian Anda.
+                            @else
+                                Belum ada data buku.
+                            @endif
                         </td>
                     </tr>
                 @endforelse
             </tbody>
 
         </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <small class="text-muted">
+            @if($books->total() > 0)
+                Menampilkan {{ $books->firstItem() }}-{{ $books->lastItem() }} dari {{ $books->total() }} buku
+            @endif
+        </small>
+
+        {{ $books->links() }}
     </div>
 
 </div>

@@ -10,14 +10,24 @@ use Illuminate\View\View;
 
 class BookController extends Controller
 {
-    // 1. LIST BUKU
-    public function index(): View
+    // 1. LIST BUKU (dengan pencarian, filter, dan pagination)
+    public function index(Request $request): View
     {
-        $books = Book::with('category')
-            ->orderBy('title')
-            ->get();
+        $search     = trim($request->string('search')->toString());
+        $categoryId = $request->integer('category') ?: null;
+        $stock      = $request->string('stock')->toString();
 
-        return view('books.index', compact('books'));
+        $books = Book::with('category')
+            ->search($search)
+            ->inCategory($categoryId)
+            ->stockStatus($stock)
+            ->orderBy('title')
+            ->paginate(10)
+            ->withQueryString();
+
+        $categories = Category::orderBy('name')->get();
+
+        return view('books.index', compact('books', 'categories', 'search', 'categoryId', 'stock'));
     }
 
     // 2. FORM TAMBAH BUKU (+ Pilihan Kategori)
