@@ -1,4 +1,9 @@
+<<<<<<< HEAD
+
+<h1>Daftar Kategori</h1>
+=======
 @extends('layouts.app')
+>>>>>>> b1b9ddc6ed5bc1e1a465aa5643ae4d4a8f2d6400
 
 @section('title', 'Kategori Buku')
 
