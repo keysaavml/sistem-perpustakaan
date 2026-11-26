@@ -29,16 +29,22 @@ Menampilkan ringkasan data perpustakaan, yaitu jumlah buku, total stok buku, jum
 Admin dapat melihat, menambah, mengubah, dan menghapus akun pengguna serta menentukan role masing-masing pengguna.
 
 ### Data Kategori
-Admin dapat mengelola kategori buku, sedangkan petugas dapat melihat daftar kategori.
+Admin dapat mengelola kategori buku, sedangkan petugas dapat melihat daftar kategori. Kategori yang masih dipakai oleh buku tidak dapat dihapus.
 
 ### Data Buku
-Admin dan petugas dapat melihat, menambah, mengubah, serta menghapus data buku.
+Admin dan petugas dapat melihat, menambah, mengubah, serta menghapus data buku. Buku yang sudah memiliki riwayat peminjaman tidak dapat dihapus.
 
 ### Data Anggota
-Admin dan petugas dapat mengelola data anggota perpustakaan.
+Admin dan petugas dapat mengelola data anggota perpustakaan. Anggota yang memiliki riwayat peminjaman tidak dapat dihapus.
 
 ### Peminjaman dan Pengembalian
-Admin dan petugas dapat mencatat transaksi peminjaman dan pengembalian buku. Stok buku akan berkurang saat dipinjam dan bertambah kembali setelah dikembalikan.
+Admin dan petugas dapat mencatat transaksi peminjaman dan pengembalian buku.
+
+- Setiap peminjaman mencatat petugas yang memproses, anggota peminjam, tanggal pinjam, dan detail buku yang dipinjam.
+- Tanggal jatuh tempo otomatis 1 minggu setelah tanggal pinjam.
+- Status awal peminjaman adalah `borrowed`, dan stok buku berkurang sesuai jumlah yang dipinjam.
+- Saat pengembalian, tanggal kembali dicatat, status berubah menjadi `returned`, dan stok buku bertambah kembali.
+- Proses peminjaman dan pengembalian berjalan dalam satu transaksi database.
 
 ## Hak Akses
 
@@ -63,14 +69,19 @@ Database yang digunakan adalah MySQL dengan beberapa tabel berikut:
 - borrowings
 - borrowing_details
 
-Setiap tabel memiliki relasi sesuai dengan kebutuhan pengelolaan data perpustakaan.
+Relasi antar tabel:
+
+- Satu kategori memiliki banyak buku (`categories` → `books`).
+- Satu user (petugas) mencatat banyak peminjaman (`users` → `borrowings`).
+- Satu anggota memiliki banyak peminjaman (`members` → `borrowings`).
+- Satu peminjaman memiliki banyak detail buku (`borrowings` → `borrowing_details`), dan setiap detail terhubung ke satu buku (`books`).
 
 ## Cara Menjalankan Project
 
 1. Clone repository GitHub:
 
    ```bash
-   git clone [LINK_REPOSITORY]
+   git clone https://github.com/keysaavml/sistem-perpustakaan.git
    ```
 
 2. Masuk ke folder project:
@@ -97,14 +108,23 @@ Setiap tabel memiliki relasi sesuai dengan kebutuhan pengelolaan data perpustaka
    php artisan key:generate
    ```
 
-6. Buat database dengan nama `sistem_perpustakaan` melalui phpMyAdmin.
+6. Jalankan Apache dan MySQL di XAMPP, lalu buat database dengan nama `sistem_perpustakaan` melalui phpMyAdmin.
 
-7. Sesuaikan konfigurasi database pada file `.env`.
+7. Sesuaikan konfigurasi database pada file `.env`:
 
-8. Jalankan migration:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=sistem_perpustakaan
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+8. Jalankan migration dan seeder:
 
    ```bash
-   php artisan migrate
+   php artisan migrate --seed
    ```
 
 9. Jalankan aplikasi:
@@ -116,6 +136,15 @@ Setiap tabel memiliki relasi sesuai dengan kebutuhan pengelolaan data perpustaka
 10. Buka browser dan akses:
 
     `http://127.0.0.1:8000`
+
+## Akun Uji
+
+Akun berikut dibuat otomatis oleh seeder:
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@perpus.test | password123 |
+| Petugas | petugas@perpus.test | password123 |
 
 ## Identitas Kelompok
 
@@ -135,7 +164,7 @@ Universitas: Universitas Singaperbangsa Karawang
 
 ## Repository
 
-[https://github.com/keysaavml/sistem-perpustakaan.git]
+https://github.com/keysaavml/sistem-perpustakaan
 
 ---
 
